@@ -1,0 +1,21 @@
+{
+  "name": "tsbot",
+  "version": "1.1.1.1",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "nodemon --exec tsx src/index.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@grammyjs/hydrate": "^1.7.0",
+    "grammy": "^1.46.0",
+    "nodemon": "^3.1.9",
+    "smol-toml": "^1.8.0",
+    "typescript": "^7.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.2",
+    "tsx": "^4.23.15"
+  }
+}
