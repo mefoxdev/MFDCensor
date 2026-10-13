@@ -3,6 +3,7 @@ import type { MeContext } from "../../../types.js"
 import { config } from "../../config.js"
 import { getPermission, type Permission } from "../../lib/censor-proto.js"
 import { getChatSettings, setCaptchaMode, setCaptchaTopic, type CaptchaMode } from "../../lib/chat-settings.js"
+import { registerJoinCaptcha } from "./captcha.js"
 
 const familyLevel: Record<Permission["family"], number> = { A: 0, DV: 1, DI: 2, M: 3 }
 
@@ -18,11 +19,11 @@ async function requirePermission(ctx: MeContext, minimum: Permission): Promise<b
   try {
     const permission = await getPermission({ tgid })
     const allowed = familyLevel[permission.family] >= familyLevel[minimum.family] && permission.rank >= minimum.rank
-    if (!allowed) await ctx.reply(`[denied] required role A3, you have ${permission.family}${permission.rank}!`)
+    if (!allowed) await ctx.reply(`[denied]\nrequired role A3, you have ${permission.family}${permission.rank}!`)
     return allowed
   } catch (error) {
     console.error("permission check failed", error)
-    await ctx.reply("[denied] permission check failed, escalate this message to the owner or support", {
+    await ctx.reply("[denied]\npermission check failed, escalate this message to the owner or support", {
       reply_parameters: ctx.msg ? { message_id: ctx.msg.message_id } : undefined,
     })
     return false
@@ -35,10 +36,14 @@ export function registerCommands(bot: Bot<MeContext>): void {
   bot.command('support', cmdSupport)
   bot.command('privacy', cmdPrivacy)
   bot.command('ban', cmdBan)
+  bot.command('set', cmdSet)
+  registerJoinCaptcha(bot)
 }
 
 async function cmdStart(ctx: MeContext): Promise<void> {
-  await ctx.reply("Welcome to TSBOT Corporation")
+  await ctx.reply("Hi\\! This bot belongs to the [MFDCommunity](https://telegram.me/MFDCommunity)", {
+    parse_mode: 'MarkdownV2'
+  })
 }
 
 // TODO: /support, /privacy
@@ -72,7 +77,7 @@ async function cmdBan(ctx: MeContext): Promise<void> {
   const reply = ctx.msg?.reply_to_message
 
   if (!reply?.from) {
-    await ctx.reply('[denied] just reply to a user\'s message to ban them')
+    await ctx.reply('[denied]\njust reply to a user\'s message to ban them')
     return
   }
 

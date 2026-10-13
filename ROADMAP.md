@@ -1,3 +1,6 @@
+## Priority: Captcha
+- [x] Implement captcha verification for new chat members
+
 ## Moderation 0.01
 - [x] /ban &reply
 - [ ] /ban $id
