@@ -1,0 +1,12 @@
+[app]
+name = "MFDCensor"
+debug = false
+
+[bot]
+token = "replace-with-a-token-from-botfather"
+
+[OwnerInfo]
+OwnerID = 0
+
+[permissions]
+api_url = "https://censor.api.mefox.dev"

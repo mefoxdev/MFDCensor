@@ -1,0 +1,28 @@
+name: Publish Container Image
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  IMAGE: ghcr.io/${{ github.repository_owner }}/mfdcensor
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Podman
+        run: sudo apt-get update && sudo apt-get install --yes podman
+      - name: Log in to GHCR
+        env:
+          GHCR_TOKEN: ${{ github.token }}
+        run: printf '%s' "$GHCR_TOKEN" | podman login ghcr.io --username "${{ github.actor }}" --password-stdin
+      - name: Build image
+        run: podman build --tag "$IMAGE:${{ github.sha }}" --tag "$IMAGE:latest" .
+      - name: Push image
+        run: podman push "$IMAGE:${{ github.sha }}" && podman push "$IMAGE:latest"

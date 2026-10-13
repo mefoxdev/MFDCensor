@@ -1,0 +1,18 @@
+[Unit]
+Description=MFDCensor Telegram moderation bot
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+Image=ghcr.io/mefoxdev/mfdcensor:latest
+ContainerName=mfdcensor
+AutoUpdate=registry
+Volume=%h/.config/mfdcensor/config.toml:/app/config.toml:ro,Z
+Volume=%h/.local/share/mfdcensor/data:/app/data:Z,U
+
+[Service]
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

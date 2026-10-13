@@ -1,0 +1,7 @@
+.git
+.github
+data
+dist
+node_modules
+config.toml
+npm-debug.log
