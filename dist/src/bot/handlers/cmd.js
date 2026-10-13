@@ -32,7 +32,9 @@ export function registerCommands(bot) {
     bot.command('ban', cmdBan);
 }
 async function cmdStart(ctx) {
-    await ctx.reply("Welcome to TSBOT Corporation");
+    await ctx.reply("Hi\\! This bot belongs to the [MFDCommunity](https://telegram.me/MFDCommunity \"MFDC\").", {
+        parse_mode: 'MarkdownV2'
+    });
 }
 // TODO: /support, /privacy
 async function cmdHelp(ctx) {
