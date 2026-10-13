@@ -2,6 +2,7 @@ import type { Bot } from "grammy"
 import type { MeContext } from "../../../types.js"
 import { config } from "../../config.js"
 import { getPermission, type Permission } from "../../lib/censor-proto.js"
+import { getChatSettings, setCaptchaMode, setCaptchaTopic, type CaptchaMode } from "../../lib/chat-settings.js"
 
 const familyLevel: Record<Permission["family"], number> = { A: 0, DV: 1, DI: 2, M: 3 }
 
@@ -84,4 +85,46 @@ async function cmdBan(ctx: MeContext): Promise<void> {
     console.error(error)
     await ctx.reply('failed to ban user')
   }
+}
+
+async function cmdSet(ctx: MeContext): Promise<void> {
+  if (!(await requirePermission(ctx, { family: "A", rank: 3 }))) {
+    return
+  }
+
+  const chatId = ctx.chat?.id
+  if (chatId === undefined) {
+    return
+  }
+
+  const topicId = ctx.msg?.message_thread_id
+  const args = typeof ctx.match === "string" ? ctx.match.trim().split(/\s+/) : []
+  if (args.length === 1 && args[0] === "chat-topic") {
+    if (topicId === undefined) {
+      await ctx.reply("[denied]\nrun this command in the target forum topic")
+      return
+    }
+    setCaptchaTopic(chatId, topicId)
+    await ctx.reply("[done]\nset chat-topic")
+    return
+  }
+
+  if (args.length === 2 && args[0] === "captcha-mode") {
+    const modes: Record<string, CaptchaMode> = {
+      disable: "disabled",
+      bastion: "bastion",
+      antibot: "antibot",
+    }
+    const mode = modes[args[1]]
+    if (mode === undefined) {
+      await ctx.reply("usage: /set captcha-mode <disable|bastion|antibot>")
+      return
+    }
+
+    setCaptchaMode(chatId, mode)
+    await ctx.reply(`[done]\nset captcha-mode ${mode}`)
+    return
+  }
+
+  await ctx.reply("usage: /set chat-topic or /set captcha-mode <disable|bastion|antibot>")
 }
