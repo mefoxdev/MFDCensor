@@ -18,7 +18,7 @@ database.exec(`
     captcha_topic_id INTEGER,
     captcha_mode TEXT NOT NULL DEFAULT 'disabled'
       CHECK (captcha_mode IN ('disabled', 'bastion', 'antibot'))
-  )
+  );
 `)
 
 const topicColumn = database.prepare("PRAGMA table_info(chat_settings)").all()
