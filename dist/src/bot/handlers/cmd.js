@@ -1,5 +1,5 @@
 import { config } from "../../config.js";
-import { getPermission } from "../../lib/guard-proto.js";
+import { getPermission } from "../../lib/censor-proto.js";
 const familyLevel = { A: 0, DV: 1, DI: 2, M: 3 };
 async function requirePermission(ctx, minimum) {
     const tgid = ctx.from?.id;

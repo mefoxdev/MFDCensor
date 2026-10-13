@@ -1,7 +1,7 @@
 import type { Bot } from "grammy"
 import type { MeContext } from "../../../types.js"
 import { config } from "../../config.js"
-import { getPermission, type Permission } from "../../lib/guard-proto.js"
+import { getPermission, type Permission } from "../../lib/censor-proto.js"
 
 const familyLevel: Record<Permission["family"], number> = { A: 0, DV: 1, DI: 2, M: 3 }
 
