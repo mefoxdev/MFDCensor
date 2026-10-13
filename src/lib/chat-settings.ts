@@ -19,6 +19,12 @@ database.exec(`
     captcha_mode TEXT NOT NULL DEFAULT 'disabled'
       CHECK (captcha_mode IN ('disabled', 'bastion', 'antibot'))
   );
+
+  CREATE TABLE IF NOT EXISTS ban_records (
+    chat_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    cause TEXT NOT NULL
+  )
 `)
 
 const topicColumn = database.prepare("PRAGMA table_info(chat_settings)").all()
@@ -57,6 +63,19 @@ const saveMode = database.prepare(`
   ON CONFLICT(chat_id) DO UPDATE SET captcha_mode = excluded.captcha_mode
 `)
 
+const saveBanRecord = database.prepare(`
+  INSERT INTO ban_records (chat_id, user_id, cause)
+  VALUES (?, ?, ?)
+`)
+
+const getLatestBanRecord = database.prepare(`
+  SELECT cause
+  FROM ban_records
+  WHERE chat_id = ? AND user_id = ?
+  ORDER BY rowid DESC
+  LIMIT 1
+`)
+
 function rowToSettings(row: Record<string, unknown>): ChatSettings {
   return {
     chatId: row.chat_id as number,
@@ -78,4 +97,13 @@ export function setCaptchaTopic(chatId: number, topicId: number): ChatSettings {
 export function setCaptchaMode(chatId: number, mode: CaptchaMode): ChatSettings | undefined {
   saveMode.run(chatId, mode)
   return getChatSettings(chatId)
+}
+
+export function recordBan(chatId: number, userId: number, cause: string): void {
+  saveBanRecord.run(chatId, userId, cause)
+}
+
+export function getLatestBanCause(chatId: number, userId: number): string | undefined {
+  const row = getLatestBanRecord.get(chatId, userId) as Record<string, unknown> | undefined
+  return row?.cause as string | undefined
 }

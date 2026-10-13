@@ -3,13 +3,18 @@
 
 ## Moderation 0.01
 - [x] /ban &reply
-- [ ] /ban $id
-- [ ] /ban @user
+- [x] /ban $id
+- [x] /info &reply
+- [x] /info $id
 - [ ] /mute &reply
 - [ ] /mute $id
-- [ ] /mute @user
 - [ ] /release &reply
 - [ ] /release $id
+
+## Deferred Until Userbot
+- [ ] /ban @user
+- [ ] /info @user
+- [ ] /mute @user
 - [ ] /release @user
 
 ## Administration 0.01
